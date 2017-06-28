@@ -2,18 +2,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class FunIT {
 	public static void main(String[] args) {
-		final double GST = 0.7;
-		
 		Scanner sc = new Scanner(System.in);
+		final double GST = 0.7;
 		
 		int menu = 0, playerCount = 5, rideGrp = 1;
 		double price = 0, amtRec = 0, changeReturn = 0, amtRecTemp = 0;
 		int[] age = {0, 0};
 		String[] name = {"", ""};
 		String creditCard = "", cardDisc = "";
-		Boolean mError = true;		//For error message display on Switch case Default;
+		Boolean mError = true;	//For error message display, on case Default
 		
 		List<String[]> playerList = new ArrayList<String[]>();			//For storing all transactions
 		List<String[]> currentPlayerList = new ArrayList<String[]>();	//For storing current ride players.
@@ -42,18 +42,18 @@ public class FunIT {
 			switch(menu) {
 				//Add ride players
 				case 1:
-					if(!(playerCount <= 0)) {
+					if(playerCount > 0) {	//playerCount > 0
 						System.out.println("\n=============================================================================");
 						System.out.println("|| \u2022 During the process of adding, enter -99 to cancel the adding process. ||");
 						System.out.println("|| \u2022 " + playerCount + " PLAYER SLOT(S) LEFT CURRENTLY                                       ||");
 						System.out.println("=============================================================================");
 						//1st player name
-						while(!name[0].equals("-99")) {
+						while(!"-99".equals(name[0])) {
 							System.out.print("Enter player name: ");
 							name[0] = sc.nextLine();
 							
 							//Sets other variable to -99 to quit adding process
-							if(name[0].equals("-99")) {
+							if("-99".equals(name[0])) {
 								age[0] = -99;
 								age[1] = -99;
 								name[1] = "-99";
@@ -62,7 +62,7 @@ public class FunIT {
 								System.out.println("User quit the process.\n");
 							}
 							//Break out of loop if it's not empty
-							else if(!name[0].equals("")) {
+							else if(!"".equals(name[0])) {
 								break;
 							}
 							else {
@@ -111,19 +111,19 @@ public class FunIT {
 						}
 						
 						//2nd player name
-						while(!name[1].equals("-99")) {
+						while(!"-99".equals(name[1])) {
 							if(age[0] >= 3 && age[0] <= 5) {
 								System.out.print("Enter 2nd player name: ");
 								name[1] = sc.nextLine();
 								
-								if(name[1].equals("-99")) {		//Sets other variable to -99 to quit adding process
+								if("-99".equals(name[1])) {		//Sets other variable to -99 to quit adding process
 									playerCount++;
 									age[1] = -99;
 									creditCard = "-99";
 									cardDisc = "-99";
 									System.out.println("User quit the process.\n");
 								}
-								else if(!name[1].equals("")) {
+								else if(!"".equals(name[1])) {
 									break;
 								}
 								else {
@@ -167,7 +167,7 @@ public class FunIT {
 						}
 						
 						//Credit Card
-						while(!creditCard.equals("-99")) {
+						while(!"-99".equals(creditCard)) {
 							System.out.println("=======================================================");
 							System.out.println("|| \u2022 10% discount when paying with POSB Credit Card. ||");
 							System.out.println("|| \u2022 5% discount when paying with OCBC Credit Card.  ||");
@@ -177,7 +177,7 @@ public class FunIT {
 							System.out.print("Enter payment method (POSB / OCBC / CASH): ");
 							creditCard = sc.nextLine();
 							
-							if(creditCard.equals("-99")){		//Sets other variable to 
+							if("-99".equals(creditCard)){		//Sets other variable to 
 								for(int i = 0; i < age.length; i++) {
 									if(age[i] != 0 && age[i] != -99) {
 										playerCount++;
@@ -187,15 +187,15 @@ public class FunIT {
 								cardDisc = "-99";
 								System.out.println("User quit the process.\n");
 							}
-							else if(creditCard.equalsIgnoreCase("POSB")) {
+							else if("POSB".equalsIgnoreCase(creditCard)) {
 								System.out.println("You are paying with POSB Credit Card (10% Discount).\n");
 								break;
 							}
-							else if(creditCard.equalsIgnoreCase("OCBC")) {
+							else if("OCBC".equalsIgnoreCase(creditCard)) {
 								System.out.println("You are paying with OCBC Credit Card (5% Discount).\n");
 								break;
 							}
-							else if (creditCard.equalsIgnoreCase("CASH") || creditCard.equals("")) {
+							else if ("CASH".equalsIgnoreCase(creditCard) || "".equals(creditCard)) {
 								creditCard = "CASH";
 								System.out.println("You are paying with CASH.\n");
 								break;
@@ -206,7 +206,7 @@ public class FunIT {
 						}
 						
 						//ID Card Discount
-						while(!cardDisc.equals("-99")) {						
+						while(!"-99".equals(cardDisc)) {						
 							if((age[0] > 17 && age[0] <= 80) || (age[1] > 17 && age[1] <= 80)) {
 								System.out.println("==============================================================");
 								System.out.println("|| \u2022 20% discount for NYP Student card and age above 17.    ||");
@@ -217,7 +217,7 @@ public class FunIT {
 								System.out.print("Enter card discount (NYP Student / Safra card / None): ");
 								cardDisc = sc.nextLine();
 								
-								if(cardDisc.equals("-99")){
+								if("-99".equals(cardDisc)) {
 									for(int i = 0; i < age.length; i++) {
 										if(age[i] != 0 && age[i] != -99) {
 											playerCount++;
@@ -226,20 +226,20 @@ public class FunIT {
 									
 									System.out.println("User quit the process.\n");
 								}
-								else if(cardDisc.equalsIgnoreCase("NYP Student") && (age[0] > 17 || age[1] > 17)) {
+								else if("NYP Student".equalsIgnoreCase(cardDisc) && (age[0] > 17 || age[1] > 17)) {
 									System.out.println("20% discount applied for NYP Student card.");
 									break;
 								}
-								else if(cardDisc.equalsIgnoreCase("Safra card") && (age[0] > 18 || age[1] > 18)) {
+								else if("Safra card".equalsIgnoreCase(cardDisc) && (age[0] > 18 || age[1] > 18)) {
 									System.out.println("10% discount applied for Safra card");
 									break;
 								}
-								else if(cardDisc.equals("") || cardDisc.equalsIgnoreCase("None")) {
+								else if("".equals(cardDisc) || "None".equalsIgnoreCase(cardDisc)) {
 									cardDisc = "None";
 									System.out.println("You do not have NYP Student card or Safra card to be eligible for discounts.\n");
 									break;
 								}
-								else if(cardDisc.equalsIgnoreCase("Safra card") && (age[0] <= 18 || age[1] <= 18)) {
+								else if("Safra card".equalsIgnoreCase(cardDisc) && (age[0] <= 18 || age[1] <= 18)) {
 									System.out.println("You do not meet the age requirements for the Safra card discount.\n");
 								}
 								else {
@@ -254,7 +254,7 @@ public class FunIT {
 						}
 						
 						//Checks for -99 Values and resets to default state (0 / "").
-						if(age[0] == -99 || age[1] == -99 || name[0].equals("-99") || name[1].equals("-99") || creditCard.equals("-99") || cardDisc.equals("-99")) {
+						if(age[0] == -99 || age[1] == -99 || "-99".equals(name[0]) || "-99".equals(name[1]) || "-99".equals(creditCard) || "-99".equals(cardDisc)) {
 							for(int i = 0; i < name.length; i++) {
 								name[i] = "";
 							}
@@ -287,18 +287,18 @@ public class FunIT {
 						}
 						
 						//Applies credit card discounts
-						if(creditCard.equalsIgnoreCase("POSB")) {
+						if("POSB".equalsIgnoreCase(creditCard)) {
 							price -= (price * 0.10);
 						}
-						else if(creditCard.equalsIgnoreCase("OCBC")) {
+						else if("OCBC".equalsIgnoreCase(creditCard)) {
 							price -= (price * 0.5);
 						}
 						
 						//Applies ID card discounts
-						if(cardDisc.equalsIgnoreCase("NYP Student")) {
+						if("NYP Student".equalsIgnoreCase(cardDisc)) {
 							price -= (price * 0.20);
 						}
-						else if(cardDisc.equalsIgnoreCase("Safra card")) {
+						else if("Safra card".equalsIgnoreCase(cardDisc)) {
 							price -= (price * 0.10);
 						}
 						
@@ -307,9 +307,9 @@ public class FunIT {
 						
 						//Displays Amount Due & prompt for amount received.
 						if(price != 0) {
-							System.out.format("Amount Due (After Discount & GST): $%.2f\n", price);
+							System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
 							
-							while(amtRecTemp != -99 && !(amtRec >= price)) {
+							while(amtRecTemp != -99 && amtRec < price) {
 								System.out.print("Enter amount recieved from Customer: ");
 								try {
 									amtRecTemp = Double.valueOf(sc.nextLine());
@@ -346,8 +346,8 @@ public class FunIT {
 										System.out.println("Amount Due has been fully paid.\n");
 									}
 									else {
-										System.out.format("\nAmount Due (After Discount & GST): $%.2f\n", price);
-										System.out.format("Amount left to be paid: $%.2f\n", (price - amtRec));
+										System.out.format("%nAmount Due (After Discount & GST): $%.2f%n", price);
+										System.out.format("Amount left to be paid: $%.2f%n", (price - amtRec));
 									}
 								}
 							}
@@ -365,7 +365,7 @@ public class FunIT {
 						}
 						
 						//Checks that -99 are not entered, price and playerCount are valid before storing into playerList & currentPlayerList
-						if(!name[0].equals("-99") && !name[1].equals("-99") && age[0] != -99 && age[1] != 99 && !creditCard.equals("-99") && !cardDisc.equals("-99") && price != 0 && playerCount != 0) {
+						if(!("-99".equals(name[0]) && "-99".equals(name[1]) && age[0] == -99 && age[1] != 99 && "-99".equals(creditCard) && "-99".equals(cardDisc) && price == 0 && playerCount == 0)) {
 							//Store current transaction to currentPlayerList
 							currentPlayerList.add(new String[] {
 								name[0],
@@ -435,7 +435,7 @@ public class FunIT {
 						
 						//Displays current transaction
 						for(int i = 0; i < age.length; i++) {
-							if(!name[i].equals("")) {
+							if(!"".equals(name[i])) {
 								System.out.println("==============================================");
 								System.out.println("||            Transaction Detail            ||");
 								System.out.println("==============================================");
@@ -447,17 +447,17 @@ public class FunIT {
 							}
 						}
 						
-						if(!creditCard.equals("")) {
+						if(!"".equals(creditCard)) {
 							System.out.println("Payment Method: " + creditCard);
 						}
 						
-						if(!cardDisc.equals("")) {
+						if(!"".equals(cardDisc)) {
 							System.out.println("Card Discount: " + cardDisc);
 						}
 						
 						if(price != 0) {
-							System.out.format("Amount Due (After Discount & GST): $%.2f\n", price);
-							System.out.format("Change to return: $%.2f\n\n", changeReturn);
+							System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
+							System.out.format("Change to return: $%.2f%n%n", changeReturn);
 							
 							System.out.println("Player Slots Left: " + playerCount);
 							System.out.println("==============================================\n\n");
@@ -502,12 +502,12 @@ public class FunIT {
 							System.out.println("First Player Age: " + playerList.get(i)[1]);
 							
 							//name[1] not empty display
-							if(!playerList.get(i)[2].equals("")) {
+							if(!"".equals(playerList.get(i)[2])) {
 								System.out.println("Second Player Name: " + playerList.get(i)[2]);
 							}
 							
 							//age[1] not 0 display
-							if(!playerList.get(i)[3].equals("0")) {
+							if(!"0".equals(playerList.get(i)[3])) {
 								System.out.println("Second Player Age: " + playerList.get(i)[3]);
 							}
 							
@@ -557,19 +557,19 @@ public class FunIT {
 							System.out.println("||           Player Group " + (i+1) + "           ||");
 							System.out.println("========================================");
 							
-							if(!currentPlayerList.get(i)[0].equals("")) {
+							if(!"".equals(currentPlayerList.get(i)[0])) {
 								System.out.println("First Player Name: " + currentPlayerList.get(i)[0]);
 							}
 							
-							if(!currentPlayerList.get(i)[1].equals("0")) {
+							if(!"0".equals(currentPlayerList.get(i)[1])) {
 								System.out.println("First Player Age: " + currentPlayerList.get(i)[1]);
 							}
 							
-							if(!currentPlayerList.get(i)[2].equals("")) {
+							if(!"".equals(currentPlayerList.get(i)[2])) {
 								System.out.println("Second Player Name: " + currentPlayerList.get(i)[2]);
 							}
 							
-							if(!currentPlayerList.get(i)[3].equals("0")) {
+							if(!"0".equals(currentPlayerList.get(i)[3])) {
 								System.out.println("Second Player Age: " + currentPlayerList.get(i)[3]);
 							}
 						}
