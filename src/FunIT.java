@@ -457,7 +457,7 @@ public class FunIT {
 		}
 	}
 	
-	// Fixes Java nextInt() / nextLine issues
+	// Fixes Java nextInt() / nextLine() issues
 	// Documented on Oracle [http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8170457]
 	public static int scInt() {
 		@SuppressWarnings("resource")
