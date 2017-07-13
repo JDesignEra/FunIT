@@ -351,19 +351,15 @@ public class FunIT {
 				case 2:
 					if(!transactionList.isEmpty()) {
 						for(int i = 0; i < transactionList.size(); i++) {
-							// Index related (Can be expanded in the future if needed)
 							int currIndexLen = transactionList.get(i).length;
-									
 							String totalPlayerGet = transactionList.get(i)[currIndexLen - 1],
 									rideGrpGet = transactionList.get(i)[currIndexLen - 2],
 									changeRtnGet = transactionList.get(i)[currIndexLen - 3],
 									amtRecGet = transactionList.get(i)[currIndexLen - 4],
 									priceGet = transactionList.get(i)[currIndexLen - 5],
 									cardDiscGet = transactionList.get(i)[currIndexLen - 6],
-									creditCardGet = transactionList.get(i)[currIndexLen - 7];
-							
-							
-							String tempOut = "||                 Ride " + rideGrpGet + "                ||";
+									creditCardGet = transactionList.get(i)[currIndexLen - 7],
+									tempOut = "||                 Ride " + rideGrpGet + "                ||";
 							
 							if(i == 0) {
 								System.out.println("");
@@ -385,7 +381,7 @@ public class FunIT {
 							System.out.println("Amount Received: $" + amtRecGet);
 							System.out.println("Change to return: $" + changeRtnGet + "\n");
 							
-							try {
+							if(i < transactionList.size() - 1) {
 								int nxtIndexLen = transactionList.get(i+1).length;
 								String nxtRideGrpGet = transactionList.get(i+1)[nxtIndexLen - 2];
 								
@@ -398,7 +394,7 @@ public class FunIT {
 									charCountPrintEqual(2, tempOut);
 								}
 							}
-							catch(IndexOutOfBoundsException e) {
+							else {
 								charCountPrintEqual(0, tempOut);
 								System.out.println("Ride " + rideGrpGet + " Total Players: " + totalPlayerGet + "\n\n");
 							}
