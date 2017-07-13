@@ -1,14 +1,13 @@
-
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 /**
- * <p><h5>NOTE:</h5>
+ * <h3>NOTE:</h3>
  * <ul>
- * <li>Name & Age should always be the smallest index (Starting from 0) in transactionList object.</li>
- * <li>Name & Age should always be in an alternate index pattern in transactionList object. (e.g. name[0], age[0], name[1], age[1]...).</li>
+ * <li>Name &amp; Age should always be the smallest index (Starting from 0) in transactionList object.</li>
+ * <li>Name &amp; Age should always be in an alternate index pattern in transactionList object. (e.g. name[0], age[0], name[1], age[1]...).</li>
  * <li>rideGrp should always be the 2nd last index in transactionList object.</li>
  * <li>Total Players / Number of Players should always be the last index in transactionList object.</li>
  * </ul>
@@ -18,9 +17,9 @@ import java.util.Scanner;
  * <li>{@link #updateTransListPlayerCount(List, int, int)}</li>
  * <li>{@link #addToTransactionList(List, String[], int[], int, int, String...)}</li>
  * <li>{@link #removeTransListOldestEntry(List)}</li>
- * </ul></p>
+ * </ul>
  * @author Joel
- * @version 4.2
+ * @version 4.3
  */
 public class FunIT {
 	public static void main(String[] args) {
@@ -459,7 +458,7 @@ public class FunIT {
 	}
 	
 	/**
-	 * <p>Fixes Java nextInt() / nextLine() issues<br/>
+	 * <p>Fixes Java nextInt() / nextLine() issues<br>
 	 * Documentation on <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8170457">Oracle</a>.</p>
 	 * @return User input value [ Integer ]
 	 */
@@ -480,7 +479,7 @@ public class FunIT {
 	}
 	
 	/**
-	 * Try & Catch Double input with custom error message
+	 * Try &amp; Catch Double input with custom error message
 	 * @return User input value [ Double ]
 	 */
 	public static double scDbl() {
@@ -508,11 +507,11 @@ public class FunIT {
 	}
 	
 	/**
-	 * <p>For counting max String length to print equal length of "=" ( As some display does not have fix length ).<br>
+	 * For counting max String length to print equal length of "=" ( As some display does not have fix length ).<br>
 	 * ( Can be expanded in the future for more option if needed ).
-	 * <h5>Options</h5>
+	 * <h3>Options</h3>
 	 * 0. Display border without message.<br>
-	 * 2. Display top & bottom border with message.</p>
+	 * 2. Display top &amp; bottom border with message.<br><br>
 	 * @param opt - Select display option with 0 or 2 
 	 * @param outCount - Display message to be display and count
 	 */
