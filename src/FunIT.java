@@ -1,14 +1,27 @@
-/*
- * XXX NOTE:
- * - Total Players / Number of Players should always be the last index in transactionList object
- * - rideGrp should always be the 2nd last index in transactionList object
- */
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * <p><h5>NOTE:</h5>
+ * <ul>
+ * <li>Name & Age should always be the smallest index (Starting from 0) in transactionList object.</li>
+ * <li>Name & Age should always be in an alternate index pattern in transactionList object. (e.g. name[0], age[0], name[1], age[1]...).</li>
+ * <li>rideGrp should always be the 2nd last index in transactionList object.</li>
+ * <li>Total Players / Number of Players should always be the last index in transactionList object.</li>
+ * </ul>
+ * @see <ul>
+ * <li>{@link #scInt()}</li> <li>{@link #scDbl()}</li>
+ * <li>{@link #quitProcess()}</li> <li>{@link #charCountPrintEqual(int, String)}</li>
+ * <li>{@link #updateTransListPlayerCount(List, int, int)}</li>
+ * <li>{@link #addToTransactionList(List, String[], int[], int, int, String...)}</li>
+ * <li>{@link #removeTransListOldestEntry(List)}</li>
+ * </ul></p>
+ * @author Joel
+ * @version 4.2
+ */
 public class FunIT {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -445,8 +458,11 @@ public class FunIT {
 		}
 	}
 	
-	// Fixes Java nextInt() / nextLine() issues
-	// Documented on Oracle [http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8170457]
+	/**
+	 * <p>Fixes Java nextInt() / nextLine() issues<br/>
+	 * Documentation on <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8170457">Oracle</a>.</p>
+	 * @return User input value [ Integer ]
+	 */
 	public static int scInt() {
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
@@ -463,7 +479,10 @@ public class FunIT {
 		return i;
 	}
 	
-	// Try and catch double input with own error message
+	/**
+	 * Try & Catch Double input with custom error message
+	 * @return User input value [ Double ]
+	 */
 	public static double scDbl() {
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
@@ -479,13 +498,24 @@ public class FunIT {
 		return i;
 	}
 	
-	// Return false for boolean quitProcess, and display quit process message
+	/**
+	 * Return false for boolean quitProcess, and display quit process message.
+	 * @return boolean false
+	 */
 	public static boolean quitProcess() {
 		System.out.println("User has quit the process.\n");
 		return false;
 	}
 	
-	// For counting max String length to print equal length of "=" (As some output does not have fix length)
+	/**
+	 * <p>For counting max String length to print equal length of "=" ( As some display does not have fix length ).<br>
+	 * ( Can be expanded in the future for more option if needed ).
+	 * <h5>Options</h5>
+	 * 0. Display border without message.<br>
+	 * 2. Display top & bottom border with message.</p>
+	 * @param opt - Select display option with 0 or 2 
+	 * @param outCount - Display message to be display and count
+	 */
 	public static void charCountPrintEqual(int opt, String outCount) {
 		String outEquals = "";
 		
@@ -508,7 +538,13 @@ public class FunIT {
 		}
 	}
 	
-	// For Updating transactionList number of players for the current rideGrp
+	/**
+	 * For Updating transactionList number of players for the current rideGrp
+	 * @param list - List to be updated [ transactionList ]
+	 * @param rideGrp - Current ride group number [ rideGrp ]
+	 * @param playerCount - Current number of players [ currentListPlayer.size() ]
+	 * @return Updated List [ {@code List<String[]>} ]
+	 */
 	public static List<String[]> updateTransListPlayerCount(List<String[]> list, int rideGrp, int playerCount) {
 		// *(rideGrp should always be 2nd last index, and playerCount should always be last index)
 		for(int i = 0; i < list.size(); i++) {
@@ -534,7 +570,16 @@ public class FunIT {
 		return list;
 	}
 	
-	// For adding values to transactionList (Can be easily expanded for future use)
+	/**
+	 * For adding values to transactionList ( Can be easily expanded for future use )
+	 * @param list - Add to list [ transactionList ]
+	 * @param name - Name to be added to list [ name ]
+	 * @param age - Age to be added to list [ age ]
+	 * @param rideGrp - Current ride group number to be added to list [ rideGrp ]
+	 * @param playerCount - Number of players for the current ride to be added to list [ currentListPlayers.size() ]
+	 * @param strs - Various values that needs to be added to list ( Has to be in a String object )
+	 * @return Updated list [ {@code List<String[]>} ]
+	 */
 	public static List<String[]> addToTransactionList(List<String[]> list, String[] name, int[] age, int rideGrp, int playerCount, String... strs) {
 		List<String> tempList = new ArrayList<String>();
 		String[] obj;
@@ -562,7 +607,11 @@ public class FunIT {
 		return list;
 	}
 	
-	// For removing oldest rideGrp entries in transactionList
+	/**
+	 * For removing oldest rideGrp entries in transactionList
+	 * @param list - remove from list [ transactionList ]
+	 * @return Updated list [ {@code List<String[]>} ]
+	 */
 	public static List<String[]> removeTransListOldestEntry(List<String[]> list) {
 		String oldRideGrp = list.get(list.size() - 1)[list.get(list.size() - 1).length - 1];
 		
