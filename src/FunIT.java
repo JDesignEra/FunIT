@@ -20,7 +20,8 @@ import java.util.logging.Logger;
  * @see #removeTransListOldestEntry(List)
  * @see #printBox(String, int, String, int, char...)
  * @author Joel
- * @version 5.0
+ * @version 5.1
+ * @since 1.0
  */
 public class FunIT {
 	private static final Logger logIt = Logger.getGlobal();
