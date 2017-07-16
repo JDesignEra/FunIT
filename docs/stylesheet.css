@@ -3,12 +3,12 @@
 Overall document style
 */
 
-@import url('resources/fonts/dejavu.css');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
 
 body {
     background-color:#ffffff;
     color:#353833;
-    font-family:'DejaVu Sans', Arial, Helvetica, sans-serif;
+    font-family:'Roboto', Arial, Helvetica, sans-serif;
     font-size:14px;
     margin:0;
     padding:0;
@@ -25,11 +25,11 @@ iframe {
 }
 a:link, a:visited {
     text-decoration:none;
-    color:#4A6782;
+    color:#2196F3;
 }
 a[href]:hover, a[href]:focus {
     text-decoration:none;
-    color:#bb7a2a;
+    color:#1565C0;
 }
 a[name] {
     color:#353833;
@@ -280,14 +280,14 @@ Page header and footer styles
 Heading styles
 */
 div.details ul.blockList ul.blockList ul.blockList li.blockList h4, div.details ul.blockList ul.blockList ul.blockListLast li.blockList h4 {
-    background-color:#dee3e9;
-    border:1px solid #d0d9e0;
+    background-color:#90CAF9;
+    border:1px solid #64B5F6;
     margin:0 0 6px -8px;
     padding:7px 5px;
 }
 ul.blockList ul.blockList ul.blockList li.blockList h3 {
-    background-color:#dee3e9;
-    border:1px solid #d0d9e0;
+    background-color:#90CAF9;
+    border:1px solid #64B5F6;
     margin:0 0 6px -8px;
     padding:7px 5px;
 }
@@ -379,8 +379,8 @@ ul.blockList li.blockList, ul.blockListLast li.blockList {
 }
 ul.blockList ul.blockList li.blockList, ul.blockList ul.blockListLast li.blockList {
     padding:0px 20px 5px 10px;
-    border:1px solid #ededed; 
-    background-color:#f8f8f8;
+    border:1px solid #BBDEFB; 
+    background-color:#E3F2FD;
 }
 ul.blockList ul.blockList ul.blockList li.blockList, ul.blockList ul.blockList ul.blockListLast li.blockList {
     padding:0 0 5px 8px;
@@ -461,7 +461,8 @@ Table styles
     padding-bottom:7px;
     display:inline-block;
     float:left;
-    background-color:#F8981D;
+    background-color:#1976D2;
+	color: #ffffff;
     border: none;
     height:16px;
 }
@@ -473,7 +474,7 @@ Table styles
     margin-right:3px;
     display:inline-block;
     float:left;
-    background-color:#F8981D;
+    background-color:#1976D2;
     height:16px;
 }
 .memberSummary caption span.tableTab span, .packagesSummary caption span.tableTab span {
@@ -484,7 +485,7 @@ Table styles
     margin-right:3px;
     display:inline-block;
     float:left;
-    background-color:#4D7A97;
+    background-color:#2196F3;
     height:16px;
 }
 .memberSummary caption span.tableTab, .memberSummary caption span.activeTableTab,
@@ -539,7 +540,7 @@ td.colFirst, td.colSecond, td.colLast, .useSummary td, .constantsSummary td {
     padding-bottom:3px;
 }
 th.colFirst, th.colSecond, th.colLast, th.colConstructorName, .constantsSummary th, .packagesSummary th {
-    background:#dee3e9;
+    background:#64B5F6;
     text-align:left;
     padding:8px 3px 3px 7px;
 }
@@ -587,7 +588,7 @@ td.colLast a:link, td.colLast a:visited,
     background-color:#FFFFFF;
 }
 .rowColor, .rowColor th {
-    background-color:#EEEEEF;
+    background-color:#BBDEFB;
 }
 /*
 Content styles
@@ -867,4 +868,7 @@ table.striped > thead > tr > th, table.striped > tbody > tr > th,
 table.striped > tbody > tr > td, table.striped > tbody > tr > td {
     border-left: 1px solid black;
     border-right: 1px solid black;
+}
+a#methods\.inherited\.from\.class\.java\.lang\.Object {
+	display: none !important;
 }
