@@ -1,4 +1,6 @@
 # FunIT
+[FunIT Online Java Documentation powered by GitHub Pages](https://jdesignera.github.io/FunIT/ "FunIT Online Documentation powered by GitHub Pages")
+
 FunIT is a new theme park that provides fun rides for both young and old. The executives of FunIT has decided that they need to implement a system to track all payment transactions and to enforce business rules. You are the software engineer employed to create this new application.
 
 ----
