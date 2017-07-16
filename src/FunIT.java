@@ -15,12 +15,13 @@ import java.util.logging.Logger;
  * @see #scDbl()
  * @see #quitProcess(Object)
  * @see #namePrompt()
+ * @see #printTransaction(List, String[], int[])
  * @see #updateTransListPlayerCount(List, int, int)
  * @see #addToTransactionList(List, String[], int[], int, int, String...)
  * @see #removeTransListOldestEntry(List)
  * @see #printBox(String, int, String, int, char...)
  * @author Joel
- * @version 6.0
+ * @version 6.1
  * @since 1.0
  */
 public class FunIT {
