@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * @see #removeTransListOldestEntry(List)
  * @see #printBox(String, int, String, int, char...)
  * @author Joel
- * @version 6.1
+ * @version 6.2
  * @since 1.0
  */
 public class FunIT {
