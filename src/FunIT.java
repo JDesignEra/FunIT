@@ -5,12 +5,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * <strong>NOTE:</strong>
- * <ul><li>Name &amp; Age should always be the smallest index (Starting from 0) in transactionList object.</li>
- * <li>Name &amp; Age should always be in an alternate index pattern in transactionList object. (e.g. name[0], age[0], name[1], age[1]...).</li>
- * <li>rideGrp should always be the 2nd last index in transactionList object.</li>
- * <li>Total Players / Number of Players should always be the last index in transactionList object.</li>
- * </ul>
+ * Name: Tan Kok Kiang Joel<br>
+ * Admin No.: 174866J<br>
+ * Course Name: DPST<br>
+ * Class: BI1701<br>
+ * Start Date: 12 June 2017<br>
+ * Completed Date: 17 July 2017
  * @see #scInt()
  * @see #scDbl()
  * @see #quitProcess(Object)
@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * @see #removeTransListOldestEntry(List)
  * @see #printBox(String, int, String, int, char...)
  * @author Joel
- * @version 5.1
+ * @version 6.0
  * @since 1.0
  */
 public class FunIT {
@@ -319,48 +319,7 @@ public class FunIT {
 				// Display entire day's transactions
 				case 2:
 					if(!transactionList.isEmpty()) {
-						for(int i = 0; i < transactionList.size(); i++) {
-							String rideGrpGet = transactionList.get(i)[9];
-							
-							if(i == 0) {
-								System.out.println("");
-								printBox("RIDE " + transactionList.get(i)[9], 45, "center", 2, '=');
-							}
-							
-							for (int x = 0; x < (name.length * 2) && x < (age.length * 2); x+= 2) {
-								String nameGet = transactionList.get(i)[x];
-								String ageGet = transactionList.get(i)[x+1];
-								
-								if(!("".equals(nameGet) && "0".equals(ageGet))) {
-									System.out.println("Player Name: " + nameGet);
-									System.out.println("Player Age: " + ageGet);
-								}
-							}
-							
-							System.out.println("Payment Method: " + transactionList.get(i)[4]);
-							System.out.println("Card Discount: " + transactionList.get(i)[5]);
-							System.out.println("Amount Due (After Discount & GST): $" + transactionList.get(i)[6]);
-							System.out.println("Amount Received: $" + transactionList.get(i)[7]);
-							System.out.println("Change to return: $" + transactionList.get(i)[8]);
-							
-							if(i == transactionList.size() - 1) {
-								printBox("Ride " + rideGrpGet + " Total Players: " + transactionList.get(i)[10], 45, "left", 2, '-');
-								System.out.println("\n");
-							}
-							else {
-								int nxtIndexLen = transactionList.get(i+1).length;
-								String nxtRideGrpGet = transactionList.get(i+1)[nxtIndexLen - 2];
-														
-								if(!rideGrpGet.equals(nxtRideGrpGet)) {
-									printBox("Ride " + rideGrpGet + " Total Players: " + transactionList.get(i)[10], 45, "left", 2, '-');
-									System.out.println();
-									printBox("RIDE " + nxtRideGrpGet, 45, "center", 2, '=');
-								}
-								else {
-									printBox("", 45, "left", 4, '-');
-								}
-							}
-						}
+						printTransaction(transactionList, name, age);
 					}
 					else {
 						System.out.println("There is no transaction for the day to be display yet.\n");
@@ -392,6 +351,7 @@ public class FunIT {
 				
 				// Quit
 				case -99:
+					printTransaction(transactionList, name, age);
 					System.out.println("User has quit the program.\n");
 					sc.close();
 				break;
@@ -474,6 +434,57 @@ public class FunIT {
 		}
 		
 		return name;
+	}
+	
+	/**
+	 * For printing or displaying entire day transactions
+	 * @param list List to be displayed [ List&#60;String[]&#62; transactionList ]
+	 * @param name For counting name[] length [ String[] age ]
+	 * @param age For counting age[] length [ int[] age ]
+	 */
+	public static void printTransaction(List<String[]> list, String[] name, int[] age) {
+		for(int i = 0; i < list.size(); i++) {
+			String rideGrpGet = list.get(i)[9];
+			
+			if(i == 0) {
+				System.out.println("");
+				printBox("RIDE " + list.get(i)[9], 45, "center", 2, '=');
+			}
+			
+			for (int x = 0; x < (name.length * 2) && x < (age.length * 2); x+= 2) {
+				String nameGet = list.get(i)[x];
+				String ageGet = list.get(i)[x+1];
+				
+				if(!("".equals(nameGet) && "0".equals(ageGet))) {
+					System.out.println("Player Name: " + nameGet);
+					System.out.println("Player Age: " + ageGet);
+				}
+			}
+			
+			System.out.println("Payment Method: " + list.get(i)[4]);
+			System.out.println("Card Discount: " + list.get(i)[5]);
+			System.out.println("Amount Due (After Discount & GST): $" + list.get(i)[6]);
+			System.out.println("Amount Received: $" + list.get(i)[7]);
+			System.out.println("Change to return: $" + list.get(i)[8]);
+			
+			if(i == list.size() - 1) {
+				printBox("Ride " + rideGrpGet + " Total Players: " + list.get(i)[10], 45, "left", 2, '-');
+				System.out.println("\n");
+			}
+			else {
+				int nxtIndexLen = list.get(i+1).length;
+				String nxtRideGrpGet = list.get(i+1)[nxtIndexLen - 2];
+										
+				if(!rideGrpGet.equals(nxtRideGrpGet)) {
+					printBox("Ride " + rideGrpGet + " Total Players: " + list.get(i)[10], 45, "left", 2, '-');
+					System.out.println();
+					printBox("RIDE " + nxtRideGrpGet, 45, "center", 2, '=');
+				}
+				else {
+					printBox("", 45, "left", 4, '-');
+				}
+			}
+		}
 	}
 	
 	/**
