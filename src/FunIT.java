@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,41 +8,40 @@ import java.util.logging.Logger;
  * Course Name: DPST<br>
  * Class: BI1701<br>
  * Start Date: 12 June 2017<br>
- * Completed Date: 17 July 2017
+ * Completed Date: 23 July 2017
  * @see #scInt()
  * @see #scDbl()
  * @see #quitProcess(Object)
  * @see #namePrompt()
- * @see #printTransaction(List, String[], int[])
- * @see #updateTransListPlayerCount(List, int, int)
- * @see #addToTransactionList(List, String[], int[], int, int, String...)
- * @see #removeTransListOldestEntry(List)
+ * @see #printTransactions(String[][], String[], int[])
+ * @see #updateTransPlayerCount(String[][], int, int)
+ * @see #addTransactions(String[][], String[], int[], int, int, String...)
+ * @see #removeTransOldestEntry(String[][])
  * @see #printBox(String, int, String, int, char...)
  * @author Joel
- * @version 6.2
+ * @version 7.0
  * @since 1.0
  */
 public class FunIT {
 	private static final Logger logIt = Logger.getGlobal();
 	private static final Scanner sc = new Scanner(System.in);
-
+	
 	public static void main(String[] args) {
-		final double GST = 0.7;
+		final double GST = 0.07;
 		
-		int menu = 0, rideGrp = 1;
+		int menu = 0, rideGrp = 1, playerCount = 0;
 		double amtRec = 0, amtRecTemp = 0, price = 0, changeReturn = 0;
 		String creditCard = "", cardDisc = "";
-		boolean quitProcess = true;
+		boolean quitProcess = true;		// false == User quit the process with -99
 		
 		String[] name = {"", ""};
 		int[] age = {0, 0};
 		
-		List<String[]> currentPlayerList = new ArrayList<String[]>();
-		List<String[]> transactionList = new ArrayList<String[]>();
+		String[][] currentPlayers = new String[5][], transactions = new String[1000][];
 		
 		while(menu != -99) {
 			printBox("FunIT", 44, "center", 2, '=');
-			printBox("  1. Add rid players", 44, "left", 0);
+			printBox("  1. Add ride players", 44, "left", 0);
 			printBox("  2. Display entire day's transactions", 44, "left", 0);
 			printBox("  3. Begin the ride", 44, "left", 0);
 			printBox("-99. Quit", 44, "left", 3, '=');
@@ -52,12 +49,12 @@ public class FunIT {
 			menu = scInt();
 			
 			switch(menu) {
-				// Add ride players
-				case 1:
-					if(currentPlayerList.size() < 5) {
+				case 1:		// Add ride players
+					if(playerCount < 5) {
 						System.out.println();
 						printBox("\u2022 During the process of adding, enter -99 to cancel the adding process.", 77, "left", 1, '=');
-						printBox("\u2022 " + (5 - currentPlayerList.size()) + " PLAYER SLOT(S) LEFT CURRENTLY.", 77, "left", 3, '=');
+						printBox("\u2022 Current ride group is " + rideGrp, 77, "left", 1, '=');
+						printBox("\u2022 " + (5 - playerCount) + " PLAYER SLOT(S) LEFT CURRENTLY.", 77, "left", 3, '=');
 						
 						// First Player name
 						while(quitProcess && "".equals(name[0])) {
@@ -74,7 +71,7 @@ public class FunIT {
 							if(quitProcess) {
 								if(age[0] >= 3 && age[0] <= 80) {
 									if(age[0] >= 3 && age[0] <= 5) {
-										if(currentPlayerList.size() < 4) {
+										if(playerCount < 4) {
 											System.out.println("You have entered a child player, the 2nd player has to be an adult.\n");
 										}
 										else {
@@ -220,7 +217,7 @@ public class FunIT {
 								price -= (price * 0.10);
 							}
 							else if("OCBC".equalsIgnoreCase(creditCard)) {
-								price -= (price * 0.5);
+								price -= (price * 0.05);
 							}
 							
 							// Applies ID card discounts
@@ -264,14 +261,18 @@ public class FunIT {
 								System.out.println();
 								printBox("Transaction Detail", 45, "center", 2, '=');
 								
-								// Stores to currentPlayerList if name is not empty and age is not 0, and display
+								// Stores to currentPlayers if name is not empty and age is not 0, and display
 								for(int i = 0; i < name.length && i < age.length; i++) {
 									if(!"".equals(name[i]) && age[i] != 0) {
-										currentPlayerList.add(new String[] {
-											name[i],
-											String.valueOf(age[i])
-										});
+										for(int x = 0; x < currentPlayers.length; x++) {
+											if(currentPlayers[x] == null) {
+												String[] newPlayer = {name[i], String.valueOf(age[i])};
+												currentPlayers[x] = newPlayer;
+												break;
+											}
+										}
 										
+										playerCount++;
 										System.out.println("Player " + (i+1) + " name: " + name[i]);
 										System.out.println("Player " + (i+1) + " age: " + age[i]);
 									}
@@ -280,20 +281,12 @@ public class FunIT {
 								System.out.println("Payment Method: " + creditCard);
 								System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
 								System.out.format("Change to return: $%.2f%n", changeReturn);
-								printBox("Player Slots Left: " + (5 - currentPlayerList.size()), 45, "left", 2, '=');
+								printBox("Player Slots Left: " + (5 - playerCount), 45, "left", 2, '=');
 								System.out.println("\n");
 								
-								// Update number of players of the current ride group in transactionList
-								transactionList = updateTransListPlayerCount(transactionList, rideGrp, currentPlayerList.size());
-								
-								// Stores up to a max of 1000 transactions. Else remove the the oldest rideGrp transaction and add new entry
-								if(transactionList.size() < 1000) {
-									transactionList = addToTransactionList(transactionList, name, age, rideGrp, currentPlayerList.size(), creditCard, cardDisc, String.format("%.2f", price), String.format("%.2f", amtRec), String.format("%.2f", changeReturn));
-								}
-								else {		// Remove oldest rideGrp entries (Last Index) and add new entry
-									transactionList = removeTransListOldestEntry(transactionList);
-									transactionList = addToTransactionList(transactionList, name, age, rideGrp, currentPlayerList.size(), creditCard, cardDisc, String.format("%.2f", price), String.format("%.2f", amtRec), String.format("%.2f", changeReturn));
-								}
+								// Update number of players of the current ride group in transactions & stores new transaction
+								updateTransPlayerCount(transactions, rideGrp, playerCount);
+								addTransactions(transactions, name, age, rideGrp, playerCount, creditCard, cardDisc, String.format("%.2f", price), String.format("%.2f", amtRec), String.format("%.2f", changeReturn));
 							}
 						}
 						
@@ -317,32 +310,33 @@ public class FunIT {
 					}
 				break;
 				
-				// Display entire day's transactions
-				case 2:
-					if(!transactionList.isEmpty()) {
-						printTransaction(transactionList, name, age);
+				case 2:		// Display entire day's transactions
+					if(transactions[0] != null) {
+						printTransactions(transactions, name, age);
 					}
 					else {
 						System.out.println("There is no transaction for the day to be display yet.\n");
 					}
 				break;
 				
-				// Begin the ride
-				case 3:
-					if(!currentPlayerList.isEmpty()) {
+				case 3:		// Begin the ride
+					if(currentPlayers[0] != null) {
 						System.out.println("\n");
 						printBox("Current Ride Players", 45, "center", 2, '=');
 						
-						for(int i = 0; i < currentPlayerList.size(); i++) {
-							System.out.println("Player " + (i+1) + " Name: " + currentPlayerList.get(i)[0]);
-							System.out.println("Player " + (i+1) + " Age: " + currentPlayerList.get(i)[1]);
+						for(int i = 0; i < currentPlayers.length && currentPlayers[i] != null; i++) {
+							System.out.println("Player " + (i+1) + " Name: " + currentPlayers[i][0]);
+							System.out.println("Player " + (i+1) + " Age: " + currentPlayers[i][1]);
 						}
 						
-						// Display total number of players
-						printBox("Number Of Players For This Ride: " + currentPlayerList.size(), 45, "left", 2, '=');
+						printBox("Number Of Players For This Ride: " + (playerCount), 45, "left", 2, '=');
 						System.out.println("\nTHE RIDE HAS BEEN STARTED!\n");
 						
-						currentPlayerList.clear();
+						for(int i = 0; i < currentPlayers.length; i++) {
+							currentPlayers[i] = null;
+						}
+						
+						playerCount = 0;
 						rideGrp++;
 					}
 					else {
@@ -350,9 +344,8 @@ public class FunIT {
 					}
 				break;
 				
-				// Quit
-				case -99:
-					printTransaction(transactionList, name, age);
+				case -99:	// Quit
+					printTransactions(transactions, name, age);
 					System.out.println("User has quit the program.\n");
 					sc.close();
 				break;
@@ -407,18 +400,26 @@ public class FunIT {
 	 */
 	public static boolean quitProcess(Object input) {
 		String strInput = String.valueOf(input);
-		if(strInput.contains(".")) {
-			strInput = strInput.substring(0, strInput.indexOf('.'));
-		}
 		
-		if("-99".equals(strInput)) {
-			System.out.println("User has quit the process.\n");
-			return false;
+		if(input instanceof Double) {
+			if(strInput.contains(".")) {
+				strInput = strInput.substring(0, strInput.indexOf('.'));
+			}
+			
+			if("-99".equals(strInput)) {
+				System.out.println("User has quit the process.\n");
+				return false;
+			}
+		}
+		else {
+			if("-99".equals(strInput)) {
+				System.out.println("User has quit the process.\n");
+				return false;
+			}
 		}
 		
 		return true;
 	}
-	
 	
 	/**
 	 * For prompting player name and display appropriate message after input.
@@ -438,23 +439,95 @@ public class FunIT {
 	}
 	
 	/**
-	 * For printing or displaying entire day transactions
-	 * @param list List to be displayed [ List&#60;String[]&#62; transactionList ]
-	 * @param name For counting name[] length [ String[] age ]
-	 * @param age For counting age[] length [ int[] age ]
+	 * For updating transactions player count for the current ride group.
+	 * @param transactions 2 Dimensional transactions array to be updated. [ String[][] transactions ]
+	 * @param rideGrp Current ride group number. [ int rideGrp ]
+	 * @param playerCount Current number of players. [ int playerCount ]
+	 * @return Updated 2 Dimensional transactions array [ String[][] transactions ] 
 	 */
-	public static void printTransaction(List<String[]> list, String[] name, int[] age) {
-		for(int i = 0; i < list.size(); i++) {
-			String rideGrpGet = list.get(i)[9];
+	public static String[][] updateTransPlayerCount(String[][] transactions, int rideGrp, int playerCount) {
+		for(int i = 0; i < transactions.length; i++) {
+			if(transactions[i] != null && transactions[i][transactions[i].length - 2].equals(String.valueOf(rideGrp))) {
+				transactions[i][transactions[i].length - 1] = String.valueOf(playerCount);
+			}
+			else break;
+		}
+		
+		return transactions;
+	}
+	
+	/**
+	 * For adding values to transactions &amp; helps to ensure that key or important values are placed in the right index.
+	 * @param transactions 2 Dimensional transactions array to be updated. [ String[][] transactions ]
+	 * @param name Name to be added. [ String[] name ]
+	 * @param age Age to be added. [ int[] age ]
+	 * @param rideGrp Current ride group number to be added. [ int rideGrp ]
+	 * @param playerCount Player count to be added. [ int currentPlayerList.size() ]
+	 * @param strs Various values that needs to be added. [ String variables ]
+	 * @return Updated 2 Dimensional transactions array [ String[][] transactions ]
+	 */
+	public static String[][] addTransactions(String[][] transactions, String[] name, int[] age, int rideGrp, int playerCount, String... strs) {
+		String[] newTransaction = new String[name.length + age.length + strs.length + 2];
+		
+		// Build newTransaction array
+		for(int i = 0; i < name.length && i < age.length; i++) {
+			newTransaction[i*2] = name[i];
+			newTransaction[i*2+1] = String.valueOf(age[i]);
+		}
+		
+		for(int i = 0; i < strs.length; i++) {
+			newTransaction[name.length + age.length + i] = strs[i];
+		}
+		
+		newTransaction[newTransaction.length - 2] = String.valueOf(rideGrp);
+		newTransaction[newTransaction.length - 1] = String.valueOf(playerCount);
+		
+		// If last index != null == transaction is cap, therefore remove all transactions with the oldest rideGrp entries
+		if(transactions[transactions.length - 1] != null) {
+			removeTransOldestEntry(transactions);
+		}
+		
+		// Shift before inserting into first index
+		for(int i = transactions.length - 1; i > 0; i--) {
+			transactions[i] = transactions[i - 1];
+		}
+		
+		transactions[0] = newTransaction;
+		
+		return transactions;
+	}
+	
+	/**
+	 * For removing oldest rideGrp entries in transactions.
+	 * @param transactions 2 Dimensional transactions array to be updated. [ String[][] transactions ]
+	 * @return Updated 2 Dimensional transactions array [ String[][] transactions ]
+	 */
+	public static String[][] removeTransOldestEntry(String[][] transactions) {
+		String oldRideGrp = transactions[transactions.length - 1][transactions[transactions.length - 1].length - 2];
+		
+		for(int i = transactions.length - 1; i > 0; i--) {
+			if(oldRideGrp.equals(transactions[i][transactions[i].length - 2])) {
+				transactions[i] = null;
+			}
+			else break;		// Break to prevent redundant loop.
+		}
+		
+		return transactions;
+	}
+	
+	public static void printTransactions(String[][] transactions, String[] name, int[] age) {
+		for(int i = 0; i < transactions.length && transactions[i] != null; i++) {
+			String rideGrpGet = transactions[i][transactions[i].length - 2],
+					totaPlayerGet = transactions[i][transactions[i].length - 1];
 			
 			if(i == 0) {
 				System.out.println("");
-				printBox("RIDE " + list.get(i)[9], 45, "center", 2, '=');
+				printBox("RIDE " + rideGrpGet, 45, "center", 2, '=');
 			}
 			
-			for (int x = 0; x < (name.length * 2) && x < (age.length * 2); x+= 2) {
-				String nameGet = list.get(i)[x];
-				String ageGet = list.get(i)[x+1];
+			for(int x = 0; x < (name.length * 2) && x < (age.length * 2); x+=2) {
+				String nameGet = transactions[i][x];
+				String ageGet = transactions[i][x+1];
 				
 				if(!("".equals(nameGet) && "0".equals(ageGet))) {
 					System.out.println("Player Name: " + nameGet);
@@ -462,22 +535,21 @@ public class FunIT {
 				}
 			}
 			
-			System.out.println("Payment Method: " + list.get(i)[4]);
-			System.out.println("Card Discount: " + list.get(i)[5]);
-			System.out.println("Amount Due (After Discount & GST): $" + list.get(i)[6]);
-			System.out.println("Amount Received: $" + list.get(i)[7]);
-			System.out.println("Change to return: $" + list.get(i)[8]);
+			System.out.println("Payment Method: " + transactions[i][4]);
+			System.out.println("Card Discount: " + transactions[i][5]);
+			System.out.println("Amount Due (After Discount & GST): $" + transactions[i][6]);
+			System.out.println("Amount Received: $" + transactions[i][7]);
+			System.out.println("Change to return: $" + transactions[i][8]);
 			
-			if(i == list.size() - 1) {
-				printBox("Ride " + rideGrpGet + " Total Players: " + list.get(i)[10], 45, "left", 2, '-');
+			if(i == transactions.length - 1 || transactions[i+1] == null) {
+				printBox("Ride " + rideGrpGet + " Total Players: " + totaPlayerGet, 45, "left", 2, '-');
 				System.out.println("\n");
 			}
 			else {
-				int nxtIndexLen = list.get(i+1).length;
-				String nxtRideGrpGet = list.get(i+1)[nxtIndexLen - 2];
-										
+				String nxtRideGrpGet = transactions[i+1][transactions[i+1].length - 2];
+				
 				if(!rideGrpGet.equals(nxtRideGrpGet)) {
-					printBox("Ride " + rideGrpGet + " Total Players: " + list.get(i)[10], 45, "left", 2, '-');
+					printBox("Ride " + rideGrpGet + " Total Players: " + totaPlayerGet, 45, "left", 2, '-');
 					System.out.println();
 					printBox("RIDE " + nxtRideGrpGet, 45, "center", 2, '=');
 				}
@@ -486,87 +558,6 @@ public class FunIT {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * For updating transactionList player count for the current ride group.
-	 * @param list List to be updated. [ List&#60;String[]&#62; transactionList ]
-	 * @param rideGrp Current ride group number. [ int rideGrp ]
-	 * @param playerCount Current number of players. [ int currentListPlayers.size() ]
-	 * @return Updated List. [ List&#60;String[]&#62; ]
-	 */
-	public static List<String[]> updateTransListPlayerCount(List<String[]> list, int rideGrp, int playerCount) {
-		for(int i = 0; i < list.size(); i++) {
-			if(list.get(i)[list.get(i).length - 2].equals(String.valueOf(rideGrp)) && !list.get(i)[list.get(i).length - 1].equals(String.valueOf(playerCount))) {
-				String[] obj = new String[list.get(i).length];
-				
-				// Update playerCount and store all values into temporary variable,
-				for(int x = 0; x < list.get(i).length; x++) {
-					if(x == list.get(i).length - 1) {
-						obj[x] = String.valueOf(playerCount);
-					}
-					else obj[x] = list.get(i)[x];
-				}
-				
-				list.set(i, obj);
-			}
-			else break;		// Break out of for loop as current rideGrp are usually at the top index to prevent pointless looping
-		}
-		
-		return list;
-	}
-	
-	/**
-	 * For adding values to transactionList &amp; helps to ensure that key or important values are placed in the right index.
-	 * @param list List to add to. [ List&#60;String[]&#62; transactionList ]
-	 * @param name Name to be added. [ String[] name ]
-	 * @param age Age to be added. [ int[] age ]
-	 * @param rideGrp Current ride group number to be added. [ int rideGrp ]
-	 * @param playerCount Player count to be added. [ int currentPlayerList.size() ]
-	 * @param strs Various values that needs to be added. [ String variables ]
-	 * @return Updated list. [ List&#60;String[]&#62; ]
-	 */
-	public static List<String[]> addToTransactionList(List<String[]> list, String[] name, int[] age, int rideGrp, int playerCount, String... strs) {
-		List<String> tempList = new ArrayList<String>();
-		
-		String[] obj;
-		
-		for(int i = 0; i < name.length && i < age.length; i++) {
-			tempList.add(name[i]);
-			tempList.add(String.valueOf(age[i]));
-		}
-		
-		for(int i = 0; i < strs.length; i++) {
-			tempList.add(strs[i]);
-		}
-		
-		tempList.add(String.valueOf(rideGrp));			// *rideGrp should always be the 2nd last value added into the list
-		tempList.add(String.valueOf(playerCount));		// *playerCount should always be the last value added into the list
-		
-		obj = tempList.toArray(new String[tempList.size()]);
-		
-		list.add(0, obj);
-		
-		return list;
-	}
-	
-	/**
-	 * For removing oldest rideGrp entries in transactionList.
-	 * @param list List to remove from. [ List&#60;String[]&#62; transactionList ]
-	 * @return Updated list [ List&#60;String[]&#62; ]
-	 */
-	public static List<String[]> removeTransListOldestEntry(List<String[]> list) {
-		String oldRideGrp = list.get(list.size() - 1)[list.get(list.size() - 1).length - 1];
-		
-		// Iterate through list reversely (Oldest entry is from the bottom)
-		for(int i = (list.size() - 1); i >= 0; i--) {
-			if(oldRideGrp.equals(list.get(i)[list.get(i).length - 1])) {
-				list.remove(i);
-			}
-			else break;		// Break out of for loop as old rideGrp are usually at the bottom index to prevent pointless looping
-		}
-		
-		return list;
 	}
 	
 	/**
