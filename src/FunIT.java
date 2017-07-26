@@ -8,7 +8,7 @@ import java.util.logging.Logger;
  * Course Name: DPST<br>
  * Class: BI1701<br>
  * Start Date: 12 June 2017<br>
- * Completed Date: 23 July 2017
+ * Completed Date: 27 July 2017
  * @see #scInt()
  * @see #scDbl()
  * @see #quitProcess(Object)
@@ -19,24 +19,31 @@ import java.util.logging.Logger;
  * @see #removeTransOldestEntry(String[][])
  * @see #printBox(String, int, String, int, char...)
  * @author Joel
- * @version 7.0
+ * @version 7.2
  * @since 1.0
  */
 public class FunIT {
 	private static final Logger logIt = Logger.getGlobal();
 	private static final Scanner sc = new Scanner(System.in);
 	
+	/**
+	 * <strong>NOTE:</strong><br>
+	 * Some clarification,<br>
+	 * <p><strong>currentPlayers[5][]</strong><br>
+	 * Is for storing current ride players, 1 adult & one child is consider 2 players, and 1 adult is considered as 1 player.</p>
+	 * <p><strong>transactions[1000][]</strong><br>
+	 * Is for storing transactions. 1 adult or 1 adult & 1 child is considered one transaction.</p>
+	 */
 	public static void main(String[] args) {
 		final double GST = 0.07;
 		
 		int menu = 0, rideGrp = 1, playerCount = 0;
-		double amtRec = 0, amtRecTemp = 0, price = 0, changeReturn = 0;
+		double amtRec = 0, amtRecInput = 0, price = 0, changeReturn = 0;
 		String creditCard = "", cardDisc = "";
 		boolean quitProcess = true;		// false == User quit the process with -99
 		
 		String[] name = {"", ""};
 		int[] age = {0, 0};
-		
 		String[][] currentPlayers = new String[5][], transactions = new String[1000][];
 		
 		while(menu != -99) {
@@ -49,15 +56,15 @@ public class FunIT {
 			menu = scInt();
 			
 			switch(menu) {
-				case 1:		// Add ride players
+				case 1:
 					if(playerCount < 5) {
 						System.out.println();
 						printBox("\u2022 During the process of adding, enter -99 to cancel the adding process.", 77, "left", 1, '=');
-						printBox("\u2022 Current ride group is " + rideGrp, 77, "left", 1, '=');
+						printBox("\u2022 Current ride group is " + rideGrp, 77, "left", 0);
 						printBox("\u2022 " + (5 - playerCount) + " PLAYER SLOT(S) LEFT CURRENTLY.", 77, "left", 3, '=');
 						
 						// First Player name
-						while(quitProcess && "".equals(name[0])) {
+						while(quitProcess && ("".equals(name[0]) || name[0].matches(".*\\d+.*"))) {
 							name[0] = namePrompt();
 							quitProcess = quitProcess(name[0]);
 						}
@@ -90,7 +97,7 @@ public class FunIT {
 						}
 
 						// Second Player name
-						while(quitProcess && "".equals(name[1])) {
+						while(quitProcess && ("".equals(name[1]) || name[1].matches(".*\\d+.*"))) {
 							if(age[0] >= 3 && age[0] <= 5) {
 								name[1] = namePrompt();
 								quitProcess = quitProcess(name[1]);
@@ -192,105 +199,103 @@ public class FunIT {
 							}
 						}
 						
-						if(quitProcess) {
-							// Calculates total for age
-							for(int i = 0; i < age.length; i++) {
-								if(age[i] >= 3 && age[i] < 6) {
-									price += 5;
-								}
-								if(age[i] >= 6 && age[i] <=12) {
-									price += 8;
-								}
-								if(age[i] > 12 && age[i] <= 16) {
-									price += 10;
-								}	
-								if(age[i] > 16 && age[i] <= 65) {
-									price += 15;
-								}
-								if(age[i] > 65 && age[i] <= 80) {
-									price += 2;
-								}
+						// Calculates total price for age
+						for(int i : age) {
+							if(i >= 3 && i < 6) {
+								price += 5;
 							}
-							
-							// Applies credit card discounts
-							if("POSB".equalsIgnoreCase(creditCard)) {
-								price -= (price * 0.10);
+							else if(i >= 6 && i <= 12) {
+								price += 8;
 							}
-							else if("OCBC".equalsIgnoreCase(creditCard)) {
-								price -= (price * 0.05);
+							else if(i >=13 && i <= 16) {
+								price += 10;
 							}
-							
-							// Applies ID card discounts
-							if("NYP Student".equalsIgnoreCase(cardDisc)) {
-								price -= (price * 0.20);
+							else if(i >= 17 && i <= 65) {
+								price += 15;
 							}
-							else if("Safra Card".equalsIgnoreCase(cardDisc)) {
-								price -= (price * 0.10);
-							}
-							
-							price += (price * GST);
-							System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
-							
-							// Prompt for amount received
-							while(quitProcess && amtRec < price) {
-								System.out.print("Enter amount recieved from Customer: $");
-								amtRecTemp = scDbl();
-								quitProcess = quitProcess(amtRecTemp);
-								
-								if(quitProcess) {
-									if(amtRecTemp >= 0) {
-										amtRec += amtRecTemp;
-										
-										if(amtRec >= price) {
-											System.out.println("Amount Due has been fully paid.\n");
-										}
-										else {
-											System.out.format("%nAmount left to be paid: $%.2f%n", (price - amtRec));
-										}
-									}
-									else {
-										System.out.println("Please enter a postive double value, or -99 to quit the process.\n");
-									}
-								}
-							}
-							
-							// Calculate change, Display current transaction and store to lists
-							if(quitProcess) {
-								changeReturn = amtRec - price;
-								
-								System.out.println();
-								printBox("Transaction Detail", 45, "center", 2, '=');
-								
-								// Stores to currentPlayers if name is not empty and age is not 0, and display
-								for(int i = 0; i < name.length && i < age.length; i++) {
-									if(!"".equals(name[i]) && age[i] != 0) {
-										for(int x = 0; x < currentPlayers.length; x++) {
-											if(currentPlayers[x] == null) {
-												String[] newPlayer = {name[i], String.valueOf(age[i])};
-												currentPlayers[x] = newPlayer;
-												break;
-											}
-										}
-										
-										playerCount++;
-										System.out.println("Player " + (i+1) + " name: " + name[i]);
-										System.out.println("Player " + (i+1) + " age: " + age[i]);
-									}
-								}
-								
-								System.out.println("Payment Method: " + creditCard);
-								System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
-								System.out.format("Change to return: $%.2f%n", changeReturn);
-								printBox("Player Slots Left: " + (5 - playerCount), 45, "left", 2, '=');
-								System.out.println("\n");
-								
-								// Update number of players of the current ride group in transactions & stores new transaction
-								updateTransPlayerCount(transactions, rideGrp, playerCount);
-								addTransactions(transactions, name, age, rideGrp, playerCount, creditCard, cardDisc, String.format("%.2f", price), String.format("%.2f", amtRec), String.format("%.2f", changeReturn));
+							else if(i >=66 && i <= 80) {
+								price += 2;
 							}
 						}
 						
-						// Resets value to be reused
+						// Applies credit card discounts
+						if("POSB".equalsIgnoreCase(creditCard)) {
+							price -= (price * 0.10);
+						}
+						else if("OCBC".equalsIgnoreCase(creditCard)) {
+							price -= (price * 0.05);
+						}
+						
+						// Applies ID card discounts
+						if("NYP Student".equalsIgnoreCase(cardDisc)) {
+							price -= (price * 0.20);
+						}
+						else if("Safra Card".equalsIgnoreCase(cardDisc)) {
+							price -= (price * 0.10);
+						}
+						
+						price += (price * GST);
+						System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
+						
+						// Prompt for amount received
+						while(quitProcess && amtRec < price) {
+							System.out.print("Enter amount recieved from Customer: $");
+							amtRecInput = scDbl();
+							quitProcess = quitProcess(amtRecInput);
+							
+							if(quitProcess) {
+								if(amtRecInput >= 0) {
+									amtRec += amtRecInput;
+									
+									if(amtRec >= price) {
+										System.out.println("Amount Due has been fully paid.\n");
+									}
+									else {
+										System.out.format("%nAmount left to be paid: $%.2f%n", (price - amtRec));
+									}
+								}
+								else {
+									System.out.println("Please enter a postive double value, or -99 to quit the process.\n");
+								}
+							}
+						}
+						
+						// Calculate change, Display current transaction and store to currentPlayers
+						if(quitProcess) {
+							changeReturn = amtRec - price;
+							
+							System.out.println();
+							printBox("Transaction Detail", 45, "center", 2, '=');
+							
+							for(int i = 0; i < name.length && i < age.length; i++) {
+								// Store player name and age into currentPlayers if it's not "" && 0.
+								if(!"".equals(name[i]) && age[i] != 0) {
+									for(int x = 0; x < currentPlayers.length; x++) {
+										if(currentPlayers[x] == null) {
+											String[] newPlayer = {name[i], String.valueOf(age[i])};
+											currentPlayers[x] = newPlayer;
+											break;
+										}
+									}
+									
+									playerCount++;
+									System.out.println("Player " + (i+1) + " name: " + name[i]);
+									System.out.println("Player " + (i+1) + " age: " + age[i]);
+								}
+							}
+							
+							System.out.println("Payment Method: " + creditCard);
+							System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
+							System.out.format("Change to return: $%.2f%n", changeReturn);
+							printBox("Player Slots Left: " + (5 - playerCount), 45, "left", 2, '=');
+							System.out.println("\n");
+							
+							// Update number of players of the current ride group in transactions & stores new transaction
+							updateTransPlayerCount(transactions, rideGrp, playerCount);
+							addTransactions(transactions, name, age, rideGrp, playerCount, creditCard, cardDisc, String.format("%.2f", price), String.format("%.2f", amtRec), String.format("%.2f", changeReturn));
+						}
+						
+						// Reset values to be reused
 						for(int i = 0; i < name.length; i++) {
 							name[i] = "";
 						}
@@ -310,7 +315,7 @@ public class FunIT {
 					}
 				break;
 				
-				case 2:		// Display entire day's transactions
+				case 2:
 					if(transactions[0] != null) {
 						printTransactions(transactions, name, age);
 					}
@@ -319,14 +324,20 @@ public class FunIT {
 					}
 				break;
 				
-				case 3:		// Begin the ride
+				case 3:
 					if(currentPlayers[0] != null) {
 						System.out.println("\n");
 						printBox("Current Ride Players", 45, "center", 2, '=');
 						
 						for(int i = 0; i < currentPlayers.length && currentPlayers[i] != null; i++) {
-							System.out.println("Player " + (i+1) + " Name: " + currentPlayers[i][0]);
-							System.out.println("Player " + (i+1) + " Age: " + currentPlayers[i][1]);
+							for(int x = 0; x < currentPlayers[i].length; x++) {
+								if(x % 2 == 0) {
+									System.out.println("Player " + (i+1) + " Name: " + currentPlayers[i][x]);
+								}
+								else {
+									System.out.println("Player " + (i+1) + " Age: " + currentPlayers[i][x]);
+								}
+							}
 						}
 						
 						printBox("Number Of Players For This Ride: " + (playerCount), 45, "left", 2, '=');
@@ -344,7 +355,7 @@ public class FunIT {
 					}
 				break;
 				
-				case -99:	// Quit
+				case -99:
 					printTransactions(transactions, name, age);
 					System.out.println("User has quit the program.\n");
 					sc.close();
@@ -365,7 +376,6 @@ public class FunIT {
 	public static int scInt() {
 		int i = 0;
 		
-		// Try and catch int input with own error message
 		try {
 			i = Integer.valueOf(sc.nextLine());
 		}
@@ -377,7 +387,7 @@ public class FunIT {
 	}
 	
 	/**
-	 * Try &amp; Catch Double input with own error message.
+	 * Try & Catch Double input with own error message.
 	 * @return User input value [ double ]
 	 */
 	public static double scDbl() {
@@ -394,25 +404,25 @@ public class FunIT {
 	}
 	
 	/**
-	 * Checks if input it's -99, display appropriate message and return value to boolean quitProcess.
+	 * Checks if input is -99, display appropriate message and return value to boolean quitProcess.
 	 * @param input Input value to check with [ String / double / int ]
 	 * @return boolean false / boolean true
 	 */
 	public static boolean quitProcess(Object input) {
-		String strInput = String.valueOf(input);
-		
 		if(input instanceof Double) {
-			if(strInput.contains(".")) {
-				strInput = strInput.substring(0, strInput.indexOf('.'));
+			if((double) input == -99) {
+				System.out.println("User has quit the process.\n");
+				return false;
 			}
-			
-			if("-99".equals(strInput)) {
+		}
+		else if(input instanceof Integer) {
+			if((int) input == -99) {
 				System.out.println("User has quit the process.\n");
 				return false;
 			}
 		}
 		else {
-			if("-99".equals(strInput)) {
+			if("-99".equals((String) input)) {
 				System.out.println("User has quit the process.\n");
 				return false;
 			}
@@ -433,6 +443,9 @@ public class FunIT {
 		
 		if("".equals(name)) {
 			System.out.println("Player name can't be empty.\n");
+		}
+		else if(name.matches(".*\\d+.*") && !"-99".equals(name)) {
+			System.out.println("Player name can't contain numeric characters.\n");
 		}
 		
 		return name;
@@ -457,7 +470,7 @@ public class FunIT {
 	}
 	
 	/**
-	 * For adding values to transactions &amp; helps to ensure that key or important values are placed in the right index.
+	 * For adding values to transactions & helps to ensure that key or important values are placed in the right index.
 	 * @param transactions 2 Dimensional transactions array to be updated. [ String[][] transactions ]
 	 * @param name Name to be added. [ String[] name ]
 	 * @param age Age to be added. [ int[] age ]
@@ -482,12 +495,10 @@ public class FunIT {
 		newTransaction[newTransaction.length - 2] = String.valueOf(rideGrp);
 		newTransaction[newTransaction.length - 1] = String.valueOf(playerCount);
 		
-		// If last index != null == transaction is cap, therefore remove all transactions with the oldest rideGrp entries
-		if(transactions[transactions.length - 1] != null) {
-			removeTransOldestEntry(transactions);
-		}
+		// Remove all transactions with the oldest rideGrp number if last index != null
+		removeTransOldestEntry(transactions);
 		
-		// Shift before inserting into first index
+		// Shift before inserting newTransaction into first index
 		for(int i = transactions.length - 1; i > 0; i--) {
 			transactions[i] = transactions[i - 1];
 		}
@@ -498,23 +509,33 @@ public class FunIT {
 	}
 	
 	/**
-	 * For removing oldest rideGrp entries in transactions.
+	 * For removing oldest rideGrp entries in transactions when transaction is cap.
 	 * @param transactions 2 Dimensional transactions array to be updated. [ String[][] transactions ]
 	 * @return Updated 2 Dimensional transactions array [ String[][] transactions ]
 	 */
 	public static String[][] removeTransOldestEntry(String[][] transactions) {
-		String oldRideGrp = transactions[transactions.length - 1][transactions[transactions.length - 1].length - 2];
-		
-		for(int i = transactions.length - 1; i > 0; i--) {
-			if(oldRideGrp.equals(transactions[i][transactions[i].length - 2])) {
-				transactions[i] = null;
+		// If last index != null then transaction is cap, therefore remove all transactions with the oldest rideGrp number entries
+		if(transactions[transactions.length - 1] != null) {
+			// Get last index(Oldest) transaction rideGrp number
+			String oldRideGrp = transactions[transactions.length - 1][transactions[transactions.length - 1].length - 2];
+			
+			for(int i = transactions.length - 1; i > 0; i--) {
+				if(oldRideGrp.equals(transactions[i][transactions[i].length - 2])) {
+					transactions[i] = null;
+				}
+				else break;		// Break to prevent redundant loop.
 			}
-			else break;		// Break to prevent redundant loop.
 		}
 		
 		return transactions;
 	}
 	
+	/**
+	 * For printing or displaying entire day transactions
+	 * @param transactions 2 Dimensional transactions array to be updated. [ String[][] transactions ]
+	 * @param name For counting name[] length [ String[] age ]
+	 * @param age For counting age[] length [ int[] age ]
+	 */
 	public static void printTransactions(String[][] transactions, String[] name, int[] age) {
 		for(int i = 0; i < transactions.length && transactions[i] != null; i++) {
 			String rideGrpGet = transactions[i][transactions[i].length - 2],
@@ -561,18 +582,19 @@ public class FunIT {
 	}
 	
 	/**
-	 * <p>This method is being use to print a table or box with or without message in it with ease.</p>
+	 * <p>This method is being use to print a table or box with or without message in it with ease,<br>
+	 * without having to manually count the number of characters to ensure equal length for a table / box.</p>
 	 * <strong>OPTION:</strong>
-	 * <ol start="0"><li>Message Only.</li>
-	 * <li>Top border &amp; Message.</li>
-	 * <li>Top &amp; bottom border with Message.</li>
+	 * <ol start="0"><li>Message Only with side border.</li>
+	 * <li>Top border & Message.</li>
+	 * <li>Top & bottom border with Message.</li>
 	 * <li>Bottom border with Message.</li>
-	 * <li>Border Only. (Defaults)</ol>
+	 * <li>Border Only. (Default)</ol>
 	 * @param display Message to be display. [ String ]
 	 * @param width Width of border / table. [ int ]
-	 * @param align Alignment of the text in the table. [ String left / center / right ]
+	 * @param align Alignment of the text in the table. (Defaults to left) [ String left / center / right ]
 	 * @param opt See OPTION for style explanation. [ int 1 / 2 / 3 / 4 ]
-	 * @param border Style of the border. (e.g. '-', '=' &amp; e.t.c) [ char '-', '=', '_' ]
+	 * @param border Style of the top & bottom border. (e.g. '-', '=' & e.t.c) [ char '-' / '=' / '_' ]
 	 */
 	public static void printBox(String display, int width, String align, int opt, char... border) {
 		if(width >= display.length() + 6) {
@@ -582,12 +604,14 @@ public class FunIT {
 				rightMax = 0,
 				leftRightMax = width - display.length();
 			
+			// Build border length
 			for(int i = 0; i < width && border.length > 0; i++) {
 				buildBorder.append(border[0]);
 			}
 			
 			displayBorder = buildBorder.toString();
 			
+			// Calculates alignment left and right spacing
 			if("center".equalsIgnoreCase(align)) {
 				leftMax = -(leftRightMax / 2);
 				rightMax = (int) Math.round((double) leftRightMax / 2);
