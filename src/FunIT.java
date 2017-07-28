@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,7 +11,7 @@ import java.util.logging.Logger;
  * Start Date: 12 June 2017<br>
  * Completed Date: 28 July 2017
  * @see #scInt()
- * @see #scDbl()
+ * @see #scBigDecimal()
  * @see #quitProcess(Object)
  * @see #namePrompt()
  * @see #printTransactions(String[][], String[], int[])
@@ -19,7 +20,7 @@ import java.util.logging.Logger;
  * @see #removeTransOldestEntry(String[][])
  * @see #printBox(String, int, String, int, char...)
  * @author Joel
- * @version 7.4
+ * @version 7.5
  * @since 1.0
  */
 public class FunIT {
@@ -33,12 +34,16 @@ public class FunIT {
 	 * Is for storing current ride players, 1 adult & one child is consider 2 players, and 1 adult is considered as 1 player.</p>
 	 * <p><strong>transactions[1000][]</strong><br>
 	 * Is for storing transactions. 1 adult or 1 adult & 1 child is considered one transaction.</p>
+	 * <p><strong>BigDecimal</strong><br>
+	 * The reason for using BigDecimal instead of double or float is because double/float can inexact as<br>
+	 * you performed multiple calculation (addition, subtraction, multiplication, division),<br>
+	 * which makes floats and doubles inadequate for dealing with money.</p>
 	 */
 	public static void main(String[] args) {
 		final double GST = 0.07;
 		
 		int menu = 0, rideGrp = 1, playerCount = 0;
-		double amtRec = 0, amtRecInput = 0, price = 0, changeReturn = 0;
+		BigDecimal amtRec = new BigDecimal(0), amtRecInput = new BigDecimal(0), price = new BigDecimal(0), changeReturn = new BigDecimal(0);
 		String creditCard = "", cardDisc = "";
 		boolean quitProcess = true;		// false == User quit the process with -99
 		
@@ -199,62 +204,66 @@ public class FunIT {
 							}
 						}
 						
-						// Price calculation and Prompt for amount recieved
+						// Price calculation and Prompt for amount received
 						if(quitProcess) {
 							// Calculates total price for age
 							for(int i : age) {
 								if(i >= 3 && i < 6) {
-									price += 5;
+									price = price.add(new BigDecimal(5));
 								}
 								else if(i >= 6 && i <= 12) {
-									price += 8;
+									price = price.add(new BigDecimal(8));
 								}
 								else if(i >=13 && i <= 16) {
-									price += 10;
+									price = price.add(new BigDecimal(10));
 								}
 								else if(i >= 17 && i <= 65) {
-									price += 15;
+									price = price.add(new BigDecimal(15));
 								}
 								else if(i >=66 && i <= 80) {
-									price += 2;
+									price = price.add(new BigDecimal(2));
 								}
 							}
 							
+
+							
 							// Applies credit card discounts
 							if("POSB".equalsIgnoreCase(creditCard)) {
-								price -= (price * 0.10);
+								price = price.add(price.multiply(BigDecimal.valueOf(0.10)));
 							}
 							else if("OCBC".equalsIgnoreCase(creditCard)) {
-								price -= (price * 0.05);
+								price = price.add(price.multiply(BigDecimal.valueOf(0.05)));
 							}
 							
 							// Applies ID card discounts
 							if("NYP Student".equalsIgnoreCase(cardDisc)) {
-								price -= (price * 0.20);
+								price = price.add(price.multiply(BigDecimal.valueOf(0.20)));
 							}
 							else if("Safra Card".equalsIgnoreCase(cardDisc)) {
-								price -= (price * 0.10);
+								price = price.add(price.multiply(BigDecimal.valueOf(0.10)));
 							}
 							
-							price += (price * GST);		// Applies GST to Price
+							price = price.add(price.multiply(BigDecimal.valueOf(GST)));		// Applies GST to Price
+							price = price.setScale(2, BigDecimal.ROUND_HALF_UP);			// Round to 2 Decimal
 							
 							System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
 							
 							// Prompt for amount received
-							while(quitProcess && amtRec < price) {
+							
+							while(quitProcess && amtRec.compareTo(price) < 0) {
 								System.out.print("Enter amount recieved from Customer: $");
-								amtRecInput = scDbl();
+								amtRecInput = scBigDecimal();
 								quitProcess = quitProcess(amtRecInput);
 								
 								if(quitProcess) {
-									if(amtRecInput >= 0) {
-										amtRec += amtRecInput;
+									if(amtRecInput.compareTo(BigDecimal.ZERO) >= 0) {
+										amtRec = amtRec.add(amtRecInput);
 										
-										if(amtRec >= price) {
+										if(amtRec.compareTo(price) >= 0) {
 											System.out.println("Amount Due has been fully paid.\n");
 										}
 										else {
-											System.out.format("%nAmount left to be paid: $%.2f%n", (price - amtRec));
+											System.out.format("%nAmount left to be paid: $%.2f%n", (price.subtract(amtRec)));
 										}
 									}
 									else {
@@ -265,7 +274,7 @@ public class FunIT {
 							
 							// Calculate change, Display current transaction and store to currentPlayers
 							if(quitProcess) {
-								changeReturn = amtRec - price;
+								changeReturn = amtRec.subtract(price);
 								
 								System.out.println();
 								printBox("Transaction Detail", 45, "center", 2, '=');
@@ -311,8 +320,8 @@ public class FunIT {
 						
 						creditCard = "";
 						cardDisc = "";
-						price = 0;
-						amtRec = 0;
+						price = new BigDecimal(0);
+						amtRec = new BigDecimal(0);
 						quitProcess = true;
 					}
 					else {
@@ -395,17 +404,18 @@ public class FunIT {
 	}
 	
 	/**
-	 * Try & Catch Double input with own error message.
-	 * @return User input value [ double ]
+	 * Try & Catch BigDecimal input with own error message.
+	 * @return User input value [ BigDecimal ]
 	 */
-	public static double scDbl() {
-		double i = 0;
+	public static BigDecimal scBigDecimal() {
+		BigDecimal i = new BigDecimal(0);
 		
 		try {
-			i = Double.valueOf(sc.nextLine());
+			i = BigDecimal.valueOf(Double.valueOf(sc.nextLine()));
+			i = i.setScale(2, BigDecimal.ROUND_HALF_DOWN);		// Round Down to 2 Decimal
 		}
 		catch(NumberFormatException e) {
-			System.out.println("Invalid input, please enter an Integer or Double value.");
+			System.out.println("Invalid input, please enter an Integer or Decimal value.");
 		}
 		
 		return i;
@@ -417,8 +427,8 @@ public class FunIT {
 	 * @return boolean false / boolean true
 	 */
 	public static boolean quitProcess(Object input) {
-		if(input instanceof Double) {
-			if((double) input == -99) {
+		if(input instanceof BigDecimal) {
+			if(((BigDecimal) input).compareTo(new BigDecimal(-99)) == 0) {
 				System.out.println("User has quit the process.\n");
 				return false;
 			}
