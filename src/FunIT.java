@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @see #removeTransOldestEntry(String[][])
  * @see #printBox(String, int, String, int, char...)
  * @author Joel
- * @version 7.3
+ * @version 7.4
  * @since 1.0
  */
 public class FunIT {
@@ -665,7 +665,8 @@ public class FunIT {
 			}
 		}
 		else {
-			logIt.log(Level.SEVERE, "Width parameter is too short.", new Exception("Please change the parameter of the width to a min of " + (display.length() + 6)));
+			// Display proper logging message with minimum required character count number with stack trace
+			logIt.log(Level.SEVERE, "Width parameter is too short.", new Exception("Please change the parameter of the width to a minimum of " + (display.length() + 6)));
 		}
 	}
 }
