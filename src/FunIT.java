@@ -8,7 +8,7 @@ import java.util.logging.Logger;
  * Course Name: DPST<br>
  * Class: BI1701<br>
  * Start Date: 12 June 2017<br>
- * Completed Date: 27 July 2017
+ * Completed Date: 28 July 2017
  * @see #scInt()
  * @see #scDbl()
  * @see #quitProcess(Object)
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @see #removeTransOldestEntry(String[][])
  * @see #printBox(String, int, String, int, char...)
  * @author Joel
- * @version 7.2
+ * @version 7.3
  * @since 1.0
  */
 public class FunIT {
@@ -68,7 +68,7 @@ public class FunIT {
 							name[0] = namePrompt();
 							quitProcess = quitProcess(name[0]);
 						}
-
+						
 						//First Player age
 						while(quitProcess && !(age[0] >= 3 && age[0] <= 80)) {
 							System.out.print("Enter player age: ");
@@ -199,100 +199,105 @@ public class FunIT {
 							}
 						}
 						
-						// Calculates total price for age
-						for(int i : age) {
-							if(i >= 3 && i < 6) {
-								price += 5;
-							}
-							else if(i >= 6 && i <= 12) {
-								price += 8;
-							}
-							else if(i >=13 && i <= 16) {
-								price += 10;
-							}
-							else if(i >= 17 && i <= 65) {
-								price += 15;
-							}
-							else if(i >=66 && i <= 80) {
-								price += 2;
-							}
-						}
-						
-						// Applies credit card discounts
-						if("POSB".equalsIgnoreCase(creditCard)) {
-							price -= (price * 0.10);
-						}
-						else if("OCBC".equalsIgnoreCase(creditCard)) {
-							price -= (price * 0.05);
-						}
-						
-						// Applies ID card discounts
-						if("NYP Student".equalsIgnoreCase(cardDisc)) {
-							price -= (price * 0.20);
-						}
-						else if("Safra Card".equalsIgnoreCase(cardDisc)) {
-							price -= (price * 0.10);
-						}
-						
-						price += (price * GST);
-						System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
-						
-						// Prompt for amount received
-						while(quitProcess && amtRec < price) {
-							System.out.print("Enter amount recieved from Customer: $");
-							amtRecInput = scDbl();
-							quitProcess = quitProcess(amtRecInput);
-							
-							if(quitProcess) {
-								if(amtRecInput >= 0) {
-									amtRec += amtRecInput;
-									
-									if(amtRec >= price) {
-										System.out.println("Amount Due has been fully paid.\n");
-									}
-									else {
-										System.out.format("%nAmount left to be paid: $%.2f%n", (price - amtRec));
-									}
-								}
-								else {
-									System.out.println("Please enter a postive double value, or -99 to quit the process.\n");
-								}
-							}
-						}
-						
-						// Calculate change, Display current transaction and store to currentPlayers
+						// Price calculation and Prompt for amount recieved
 						if(quitProcess) {
-							changeReturn = amtRec - price;
+							// Calculates total price for age
+							for(int i : age) {
+								if(i >= 3 && i < 6) {
+									price += 5;
+								}
+								else if(i >= 6 && i <= 12) {
+									price += 8;
+								}
+								else if(i >=13 && i <= 16) {
+									price += 10;
+								}
+								else if(i >= 17 && i <= 65) {
+									price += 15;
+								}
+								else if(i >=66 && i <= 80) {
+									price += 2;
+								}
+							}
 							
-							System.out.println();
-							printBox("Transaction Detail", 45, "center", 2, '=');
+							// Applies credit card discounts
+							if("POSB".equalsIgnoreCase(creditCard)) {
+								price -= (price * 0.10);
+							}
+							else if("OCBC".equalsIgnoreCase(creditCard)) {
+								price -= (price * 0.05);
+							}
 							
-							for(int i = 0; i < name.length && i < age.length; i++) {
-								// Store player name and age into currentPlayers if it's not "" && 0.
-								if(!"".equals(name[i]) && age[i] != 0) {
-									for(int x = 0; x < currentPlayers.length; x++) {
-										if(currentPlayers[x] == null) {
-											String[] newPlayer = {name[i], String.valueOf(age[i])};
-											currentPlayers[x] = newPlayer;
-											break;
+							// Applies ID card discounts
+							if("NYP Student".equalsIgnoreCase(cardDisc)) {
+								price -= (price * 0.20);
+							}
+							else if("Safra Card".equalsIgnoreCase(cardDisc)) {
+								price -= (price * 0.10);
+							}
+							
+							price += (price * GST);		// Applies GST to Price
+							
+							System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
+							
+							// Prompt for amount received
+							while(quitProcess && amtRec < price) {
+								System.out.print("Enter amount recieved from Customer: $");
+								amtRecInput = scDbl();
+								quitProcess = quitProcess(amtRecInput);
+								
+								if(quitProcess) {
+									if(amtRecInput >= 0) {
+										amtRec += amtRecInput;
+										
+										if(amtRec >= price) {
+											System.out.println("Amount Due has been fully paid.\n");
+										}
+										else {
+											System.out.format("%nAmount left to be paid: $%.2f%n", (price - amtRec));
 										}
 									}
-									
-									playerCount++;
-									System.out.println("Player " + (i+1) + " name: " + name[i]);
-									System.out.println("Player " + (i+1) + " age: " + age[i]);
+									else {
+										System.out.println("Please enter a postive double value, or -99 to quit the process.\n");
+									}
 								}
 							}
 							
-							System.out.println("Payment Method: " + creditCard);
-							System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
-							System.out.format("Change to return: $%.2f%n", changeReturn);
-							printBox("Player Slots Left: " + (5 - playerCount), 45, "left", 2, '=');
-							System.out.println("\n");
-							
-							// Update number of players of the current ride group in transactions & stores new transaction
-							updateTransPlayerCount(transactions, rideGrp, playerCount);
-							addTransactions(transactions, name, age, rideGrp, playerCount, creditCard, cardDisc, String.format("%.2f", price), String.format("%.2f", amtRec), String.format("%.2f", changeReturn));
+							// Calculate change, Display current transaction and store to currentPlayers
+							if(quitProcess) {
+								changeReturn = amtRec - price;
+								
+								System.out.println();
+								printBox("Transaction Detail", 45, "center", 2, '=');
+								
+								for(int i = 0; i < name.length && i < age.length; i++) {
+									// Store player name and age into currentPlayers if it's not "" && 0.
+									if(!"".equals(name[i]) && age[i] != 0) {
+										for(int x = 0; x < currentPlayers.length; x++) {
+											if(currentPlayers[x] == null) {
+												String[] newPlayer = {name[i], String.valueOf(age[i])};
+												currentPlayers[x] = newPlayer;
+												break;
+											}
+										}
+										
+										playerCount++;
+										System.out.println("Player " + (i+1) + " name: " + name[i]);
+										System.out.println("Player " + (i+1) + " age: " + age[i]);
+									}
+								}
+								
+								System.out.println("Payment Method: " + creditCard);
+								System.out.format("Amount Due (After Discount & GST): $%.2f%n", price);
+								System.out.format("Change to return: $%.2f%n", changeReturn);
+								printBox("Player Slots Left: " + (5 - playerCount), 45, "left", 2, '=');
+								System.out.println("\n");
+								rtnToMenuPrompt();
+								
+								// Update number of players of the current ride group in transactions & stores new transaction
+								updateTransPlayerCount(transactions, rideGrp, playerCount);
+								addTransactions(transactions, name, age, rideGrp, playerCount, creditCard, cardDisc, String.format("%.2f", price), String.format("%.2f", amtRec), String.format("%.2f", changeReturn));
+							}
 						}
 						
 						// Reset values to be reused
@@ -318,6 +323,7 @@ public class FunIT {
 				case 2:
 					if(transactions[0] != null) {
 						printTransactions(transactions, name, age);
+						rtnToMenuPrompt();
 					}
 					else {
 						System.out.println("There is no transaction for the day to be display yet.\n");
@@ -341,7 +347,9 @@ public class FunIT {
 						}
 						
 						printBox("Number Of Players For This Ride: " + (playerCount), 45, "left", 2, '=');
-						System.out.println("\nTHE RIDE HAS BEEN STARTED!\n");
+						System.out.println();
+						printBox("THE RIDE HAS BEEN STARTED!", 45, "center", 1, '-');
+						rtnToMenuPrompt();
 						
 						for(int i = 0; i < currentPlayers.length; i++) {
 							currentPlayers[i] = null;
@@ -449,6 +457,16 @@ public class FunIT {
 		}
 		
 		return name;
+	}
+	
+	/**
+	 * For prompting user to press enter to return to the main menu.
+	 */
+	public static void rtnToMenuPrompt() {
+		printBox("PRESS ENTER TO RETURN TO MAIN MENU", 45, "center", 2, '-');
+		sc.nextLine();
+		
+		System.out.println("\n\n");
 	}
 	
 	/**
